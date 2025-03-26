@@ -10,7 +10,7 @@
     <header class="my-4">
         <h1>Biblioteka Mang</h1>
         <nav class="nav">
-            <a class="nav-link" th:href="@{/manga}">Strona Główna</a>
+            <a class="nav-link" th:href="@{/templates/manga}">Strona Główna</a>
             <a class="nav-link" th:href="@{/library}">Moja Biblioteka</a>
         </nav>
     </header>
@@ -25,7 +25,7 @@
 
             <!-- Przycisk dodawania do biblioteki -->
             <form th:action="@{/library/add/{id}(id=${manga.id()})}" method="post" class="mt-3">
-                <button type="submit" class="btn btn-success w-100">Dodaj do biblioteki</button>
+                <button type="submit" class="btn btn-success w-80">Dodaj do biblioteki</button>
             </form>
         </div>
 

@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <header class="my-4">
-        <h1>Biblioteka Mang</h1>
+        <h1>MangaPut</h1>
 
         <!-- Wyszukiwarka -->
         <form th:action="@{/manga/search}" method="get" class="my-3">
@@ -32,8 +32,8 @@
 
     <div class="row">
         <div th:each="manga : ${mangas}" class="col-md-3 mb-4">
-            <div class="card h-100">
-                <img th:src="${manga.imageUrl()}" class="card-img-top" alt="Okładka mangi" style="height: 250px; object-fit: cover;">
+            <div class="card h-100 w-60">
+                <img th:src="${manga.imageUrl()}" class="card-img-top" alt="Okładka mangi" style="height: 250px; object-fit: scale-down;">
                 <div class="card-body">
                     <h5 class="card-title" th:text="${manga.title()}">Tytuł mangi</h5>
                     <p class="card-text">

@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 public class JikanClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-    private final String URL = "https://api.jikan.moe/v4";
+    private final String URL = "https://api.jikan.moe/v4/";
 
     private long lastRequestTime = 0;
     private static final long MIN_REQUEST_INTERVAL = 1000;
