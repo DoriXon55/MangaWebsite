@@ -25,12 +25,11 @@ public class MangaController {
         this.mangaService = mangaService;
     }
 
-    @GetMapping
-    public String home(Model model)
-    {
-        List<Manga> popularMangas = mangaService.getPopularMangas(20);
+    @GetMapping({"", "/"})
+    public String home(Model model) {
+        List<Manga> popularMangas = mangaService.getPopularMangas(12);
         model.addAttribute("mangas", popularMangas);
-        return "manga/home";
+        return "home";
     }
 
     @GetMapping("/search")

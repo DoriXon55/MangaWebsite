@@ -23,6 +23,7 @@ public class UserLibraryController {
     public UserLibraryController(UserLibraryService libraryService) {
         this.libraryService = libraryService;
     }
+
     @GetMapping
     public String getUserLibrary(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         List<UserLibrary> userLibrary = libraryService.getUserLibrary(userDetails.getUsername());
