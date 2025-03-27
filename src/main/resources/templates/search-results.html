@@ -2,53 +2,64 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Wyniki wyszukiwania</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyniki wyszukiwania - Biblioteka Mang</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
 <div class="container">
-    <header class="my-4">
-        <h1>Biblioteka Mang</h1>
+    <div th:replace="~{fragments/header :: header}"></div>
 
-        <!-- Wyszukiwarka -->
-        <form th:action="@{/manga/search}" method="get" class="my-3">
-            <div class="input-group">
-                <input type="text" name="query" class="form-control" th:value="${query}" placeholder="Wyszukaj mangę...">
-                <button class="btn btn-primary" type="submit">Szukaj</button>
-            </div>
-        </form>
-
-        <nav class="nav">
-            <a class="nav-link" th:href="@{/manga}">Strona Główna</a>
-            <a class="nav-link" th:href="@{/library}">Moja Biblioteka</a>
-        </nav>
-    </header>
-
-    <h2>Wyniki wyszukiwania dla: <span th:text="${query}">Zapytanie</span></h2>
-
-    <div th:if="${#lists.isEmpty(mangas)}">
-        <div class="alert alert-info">
-            Nie znaleziono mang dla podanego zapytania.
-        </div>
+    <div class="mb-4">
+        <h2 class="mb-2">Wyniki wyszukiwania dla: <span class="text-primary" th:text="${query}">zapytanie</span></h2>
+        <p class="text-muted" th:text="${mangas.size()} + ' znalezionych tytułów'">Liczba wyników</p>
     </div>
 
-    <div class="row">
-        <div th:each="manga : ${mangas}" class="col-md-3 mb-4">
-            <div class="card h-100">
-                <img th:src="${manga.imageUrl()}" class="card-img-top" alt="Okładka mangi" style="height: 250px; object-fit: cover;">
-                <div class="card-body">
+    <div class="mb-4">
+        <form th:action="@{/manga/search}" method="get" class="d-flex" style="max-width: 500px;">
+            <input type="text" name="query" class="form-control" th:value="${query}" placeholder="Wyszukaj tytuł mangi..." required>
+            <button type="submit" class="btn btn-primary ms-2">Szukaj</button>
+        </form>
+    </div>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" th:if="${!mangas.isEmpty()}">
+        <div class="col fade-in" th:each="manga : ${mangas}">
+            <div class="card h-100 shadow-sm">
+                <div class="position-relative overflow-hidden" style="height: 250px;">
+                    <img th:if="${manga.imageUrl() != null}" th:src="${manga.imageUrl()}" class="w-100 h-100" style="object-fit: cover;" th:alt="${manga.title()}">
+                    <img th:unless="${manga.imageUrl() != null}" src="/images/no-image.jpg" class="w-100 h-100" style="object-fit: cover;" alt="Brak okładki">
+                    <div class="position-absolute top-0 end-0 m-2">
+                        <span class="badge bg-primary" th:if="${manga.score() > 0}" th:text="${manga.score()}">9.0</span>
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
                     <h5 class="card-title" th:text="${manga.title()}">Tytuł mangi</h5>
-                    <p class="card-text">
-                        <small class="text-muted">
-                            Ocena: <span th:text="${manga.score()}">0.0</span>
-                        </small>
+                    <p class="card-text small text-muted">
+                        <span th:text="${manga.genres() != null && !manga.genres().isEmpty() ? #strings.listJoin(manga.genres(), ', ') : 'Brak danych'}">Gatunki</span>
                     </p>
-                    <a th:href="@{/manga/{id}(id=${manga.id()})}" class="btn btn-primary">Szczegóły</a>
+                    <div class="mt-auto pt-3">
+                        <a th:href="@{/manga/{id}(id=${manga.id()})}" class="btn btn-outline-primary w-100">Szczegóły</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="alert alert-info p-4 text-center" th:if="${mangas.isEmpty()}">
+        <h4 class="alert-heading mb-3">Brak wyników</h4>
+        <p>Nie znaleziono żadnych mang pasujących do zapytania: <strong th:text="${query}">zapytanie</strong></p>
+        <hr>
+        <p class="mb-0">Spróbuj ponownie z innym zapytaniem lub przejdź do <a th:href="@{/manga}" class="alert-link">strony głównej</a>.</p>
+    </div>
 </div>
+
+<footer class="bg-light py-4 mt-5">
+    <div class="container text-center">
+        <p class="mb-0 text-muted">© 2024 Biblioteka Mang. Wszystkie prawa zastrzeżone.</p>
+    </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

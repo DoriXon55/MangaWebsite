@@ -2,6 +2,8 @@ package org.dorixon.websiteproject.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.processing.Pattern;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,6 +21,7 @@ public class AppUser {
     private String email;
 
     @Column(nullable = false)
+
     private String password;
 
     private boolean enabled = true;
