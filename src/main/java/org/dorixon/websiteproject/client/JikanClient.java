@@ -6,12 +6,10 @@ import org.dorixon.websiteproject.exceptions.ApiException;
 import org.dorixon.websiteproject.repo.Manga;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 
@@ -49,7 +47,7 @@ public class JikanClient {
     {
         try{
             rateLimit();
-            String url = URL + "manga/search?q=" + name;
+            String url = URL + "manga?q=" + name;
             String response = restTemplate.getForObject(url, String.class);
             return parseMangaListFromJson(response);
         } catch (Exception e)
@@ -91,6 +89,8 @@ public class JikanClient {
     }
 
     private Manga parseMangaFromJson(JsonNode node) {
+        if(node == null) return null;
+
         String imageUrl = node.path("images").path("jpg").path("image_url").asText("");
 
         // Pobieranie autorów

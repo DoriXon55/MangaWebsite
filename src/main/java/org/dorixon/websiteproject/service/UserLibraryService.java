@@ -1,75 +1,62 @@
 package org.dorixon.websiteproject.service;
-
-import org.dorixon.websiteproject.client.JikanClient;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.dorixon.websiteproject.model.UserLibrary;
-import org.dorixon.websiteproject.repo.Manga;
 import org.dorixon.websiteproject.repo.UserLibraryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+
+@AllArgsConstructor
 @Service
 public class UserLibraryService {
 
     private final UserLibraryRepository userLibraryRepository;
-    private final JikanClient jikanClient;
-
-
-    @Autowired
-    public UserLibraryService(UserLibraryRepository userLibraryRepository, JikanClient jikanClient) {
-        this.userLibraryRepository = userLibraryRepository;
-        this.jikanClient = jikanClient;
-    }
-
 
     public List<UserLibrary> getUserLibrary(String username) {
         return userLibraryRepository.findByUsername(username);
     }
-    public UserLibrary addToLibrary(String username, Long mangaId)
-    {
-        if (userLibraryRepository.existsByUsernameAndMangaId(username, mangaId))
-        {
-            throw new IllegalStateException("Manga już istnieje w Twojej bibliotece");
-        }
-        Manga manga = jikanClient.getMangaById(mangaId);
-        if(manga == null)
-        {
-            throw new IllegalStateException("Nie znaleziono mangi o podanym id");
-        }
-        UserLibrary libraryEntry = new UserLibrary();
-        libraryEntry.setUsername(username);
-        libraryEntry.setMangaId(mangaId);
-        libraryEntry.setMangaId(mangaId);
-        libraryEntry.setMangaTitle(manga.title());
-        libraryEntry.setMangaImageUrl(manga.imageUrl());
-        libraryEntry.setAddedAt(LocalDateTime.now());
-        return userLibraryRepository.save(libraryEntry);
-    }
 
-    public UserLibrary updateReadStatus(String username, Long mangaId, UserLibrary.ReadStatus status)
-    {
-        Optional<UserLibrary> existingEntry = userLibraryRepository.findByUsernameAndMangaId(username, mangaId);
-        if (existingEntry.isEmpty())
-        {
-            throw new IllegalStateException("Nie znaleziono mangi w Twojej bibliotece");
-        }
-        UserLibrary entry = existingEntry.get();
-        entry.setReadStatus(status);
-        return userLibraryRepository.save(entry);
-    }
 
-    public void removeFromLibrary(String username, Long mangaId) {
+
+
+    @Transactional
+    public UserLibrary addMangaToLibrary(String username, Long mangaId, String mangaTitle,
+                                         String mangaImageUrl, UserLibrary.ReadStatus readStatus) {
         Optional<UserLibrary> existingEntry = userLibraryRepository.findByUsernameAndMangaId(username, mangaId);
 
-        if (existingEntry.isEmpty()) {
-            throw new IllegalArgumentException("Nie znaleziono mangi w Twojej bibliotece");
+        if (existingEntry.isPresent()) {
+            UserLibrary entry = existingEntry.get();
+            entry.setReadStatus(readStatus);
+            return userLibraryRepository.save(entry);
+        } else {
+            UserLibrary newEntry = new UserLibrary();
+            newEntry.setUsername(username);
+            newEntry.setMangaId(mangaId);
+            newEntry.setMangaTitle(mangaTitle);
+            newEntry.setMangaImageUrl(mangaImageUrl);
+            newEntry.setReadStatus(readStatus);
+            newEntry.setAddedAt(LocalDateTime.now());
+            return userLibraryRepository.save(newEntry);
         }
-
-        userLibraryRepository.delete(existingEntry.get());
     }
+
+    @Transactional
+    public void updateReadStatus(String username, Long mangaId, UserLibrary.ReadStatus readStatus) {
+        Optional<UserLibrary> entry = userLibraryRepository.findByUsernameAndMangaId(username, mangaId);
+        entry.ifPresent(userLibrary -> {
+            userLibrary.setReadStatus(readStatus);
+            userLibraryRepository.save(userLibrary);
+        });
+    }
+
+    @Transactional
+    public void removeMangaFromLibrary(String username, Long mangaId) {
+        userLibraryRepository.deleteByUsernameAndMangaId(username, mangaId);
+    }
+
 
 
 

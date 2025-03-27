@@ -1,4 +1,4 @@
-package org.dorixon.websiteproject;
+package org.dorixon.websiteproject.config;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

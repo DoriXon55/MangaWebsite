@@ -47,11 +47,11 @@
                 <td>
                     <form th:action="@{/library/update/{id}(id=${entry.mangaId})}" method="post">
                         <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
-                            <option value="READING" th:selected="${entry.readStatus == T(com.dorixen.mangaapp.model.UserLibrary.ReadStatus).READING}">Czytam</option>
-                            <option value="COMPLETED" th:selected="${entry.readStatus == T(com.dorixen.mangaapp.model.UserLibrary.ReadStatus).COMPLETED}">Ukończone</option>
-                            <option value="ON_HOLD" th:selected="${entry.readStatus == T(com.dorixen.mangaapp.model.UserLibrary.ReadStatus).ON_HOLD}">Wstrzymane</option>
-                            <option value="DROPPED" th:selected="${entry.readStatus == T(com.dorixen.mangaapp.model.UserLibrary.ReadStatus).DROPPED}">Porzucone</option>
-                            <option value="PLAN_TO_READ" th:selected="${entry.readStatus == T(com.dorixen.mangaapp.model.UserLibrary.ReadStatus).PLAN_TO_READ}">Planuję przeczytać</option>
+                            <option value="READING" th:selected="${entry.readStatus == T(com.dorixon.websiteproject.model.UserLibrary.ReadStatus).READING}">Czytam</option>
+                            <option value="COMPLETED" th:selected="${entry.readStatus == T(com.dorixon.websiteproject.model.UserLibrary.ReadStatus).COMPLETED}">Ukończone</option>
+                            <option value="ON_HOLD" th:selected="${entry.readStatus == T(com.dorixon.websiteproject.model.UserLibrary.ReadStatus).ON_HOLD}">Wstrzymane</option>
+                            <option value="DROPPED" th:selected="${entry.readStatus == T(com.dorixon.websiteproject.model.UserLibrary.ReadStatus).DROPPED}">Porzucone</option>
+                            <option value="PLAN_TO_READ" th:selected="${entry.readStatus == T(com.dorixon.websiteproject.model.UserLibrary.ReadStatus).PLAN_TO_READ}">Planuję przeczytać</option>
                         </select>
                     </form>
                 </td>

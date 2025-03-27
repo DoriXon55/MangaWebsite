@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Moja Biblioteka - Biblioteka Mang</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+    <style>
+        .manga-cover {
+            height: 250px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Dołączamy fragment nagłówka -->
+    <div th:replace="~{fragments/header :: header}"></div>
+
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+    <h2>Moja Biblioteka</h2>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" th:if="${!mangaList.isEmpty()}">
+        <div class="col" th:each="manga : ${mangaList}">
+            <div class="card h-100">
+                <img th:if="${manga.mangaImageUrl != null}" th:src="${manga.mangaImageUrl}" class="card-img-top manga-cover" th:alt="${manga.mangaTitle}">
+                <img th:unless="${manga.mangaImageUrl != null}" src="/images/no-image.jpg" class="card-img-top manga-cover" alt="Brak okładki">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${manga.mangaTitle}">Tytuł mangi</h5>
+                    <p class="card-text">
+                        <span class="badge bg-primary" th:text="${manga.readStatus}">Status czytania</span>
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="btn-group">
+                            <a th:href="@{/manga/{id}(id=${manga.mangaId})}" class="btn btn-sm btn-outline-primary">Szczegóły</a>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" th:data-bs-target="'#updateModal' + ${manga.id}">Zmień status</button>
+                            <form th:action="@{/library/remove}" method="post" style="display: inline;">
+                                <input type="hidden" name="mangaId" th:value="${manga.mangaId}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Usuń</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal do zmiany statusu -->
+            <div class="modal fade" th:id="'updateModal' + ${manga.id}" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Zmień status czytania</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/library/update-status}" method="post">
+                                <input type="hidden" name="mangaId" th:value="${manga.mangaId}">
+                                <div class="mb-3">
+                                    <label for="readStatus" class="form-label">Status czytania:</label>
+                                    <select id="readStatus" name="readStatus" class="form-select">
+                                        <option th:each="status : ${readStatuses}"
+                                                th:value="${status}"
+                                                th:text="${status}"
+                                                th:selected="${status == manga.readStatus}">
+                                            Status
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Zapisz zmiany</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-info" th:if="${mangaList.isEmpty()}">
+        Twoja biblioteka jest pusta. Dodaj mangi, aby zobaczyć je tutaj.
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

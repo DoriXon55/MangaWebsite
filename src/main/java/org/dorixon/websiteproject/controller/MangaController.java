@@ -38,7 +38,7 @@ public class MangaController {
         List<Manga> mangas = mangaService.searchMangasByName(query);
         model.addAttribute("mangas", mangas);
         model.addAttribute("query", query);
-        return "manga/search-results";
+        return "search-results";
     }
 
     @GetMapping("/{id}")
@@ -47,7 +47,7 @@ public class MangaController {
         Manga manga = mangaService.getMangaByID(id);
         if (manga == null) return "redirect:/manga?error=Manga nie została znaleziona";
         model.addAttribute("manga", manga);
-        return "manga/details";
+        return "details";
 
     }
 }
