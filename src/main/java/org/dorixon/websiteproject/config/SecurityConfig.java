@@ -22,7 +22,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/manga/**", "/register", "/perform_register", "/h2-console/**",
+                        .requestMatchers("/", "/manga/**", "/register", "/perform_register", "/verify", "/h2-console/**",
                                 "/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/library/**").authenticated()
                         .anyRequest().authenticated()
@@ -42,8 +42,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/h2-console/**")
                 )
-                .headers(headers -> headers.frameOptions().disable());
-
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.disable())
+                );
 
         return http.build();
     }
